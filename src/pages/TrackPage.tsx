@@ -1,5 +1,19 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { AudioPlayer } from "@/components/AudioPlayer";
+import { trackTrackPageView } from "@/lib/analytics";
+
+// Track data mapping
+const trackData = [
+  { title: "What is Ego Death", slug: "what-is-ego-death", duration: 0 },
+  { title: "What is Nonduality", slug: "what-is-non-duality", duration: 0 },
+  { title: "The Four Selves", slug: "the-four-selves", duration: 0 },
+  { title: "Realization and Transformation", slug: "realisation-and-transformation", duration: 0 },
+  { title: "The Evolution of Nonduality", slug: "the-evolution-of-nonduality", duration: 0 },
+  { title: "The Edge of Evolution", slug: "the-edge-of-evolution", duration: 0 },
+  { title: "Realigning the Soul", slug: "realigning-the-soul", duration: 0 },
+  { title: "Rational Idealism", slug: "rational-idealism", duration: 0 },
+];
 
 export function TrackPage() {
   const { trackSlug } = useParams();
@@ -29,6 +43,16 @@ export function TrackPage() {
     isValidSlug: trackSlug && trackIndex !== undefined,
     timestamp: new Date().toISOString()
   });
+
+  // Track page view when component mounts
+  useEffect(() => {
+    if (trackSlug && trackIndex !== undefined) {
+      const track = trackData[trackIndex];
+      if (track) {
+        trackTrackPageView(track.title, track.slug, trackIndex, track.duration);
+      }
+    }
+  }, [trackSlug, trackIndex]);
 
   // If invalid slug, redirect to home
   if (!trackSlug || trackIndex === undefined) {

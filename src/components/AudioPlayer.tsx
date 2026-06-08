@@ -25,6 +25,7 @@ import {
   trackAudioError,
   trackAudioLoadTime,
   trackTrackSwitchTime,
+  trackAudioPlayWithContext,
 } from "@/lib/analytics";
 
 // Extend Window interface for mobile Safari detection timeout
@@ -536,8 +537,15 @@ export function AudioPlayer({ initialTrackIndex = 0 }: AudioPlayerProps) {
       });
       setIsPlaying(true);
       
-      // Track audio play event
-      trackAudioPlay(track.title, currentTrack, audio.duration);
+      // Track audio play event with enhanced context
+      const trackSlug = getTrackSlug(currentTrack);
+      trackAudioPlayWithContext(
+        track.title, 
+        trackSlug, 
+        currentTrack, 
+        audio.duration,
+        'user_click'
+      );
     };
     
     const handlePause = () => {
@@ -1507,7 +1515,8 @@ export function AudioPlayer({ initialTrackIndex = 0 }: AudioPlayerProps) {
       timestamp: new Date().toISOString()
     });
     
-    // Track track selection
+    // Track track selection with enhanced context
+    const trackSlug = getTrackSlug(trackIndex);
     trackTrackSelect(mockTracks[trackIndex].title, trackIndex);
     
     // Stop all audio immediately using centralized function

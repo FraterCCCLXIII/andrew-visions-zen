@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Home, ArrowLeft, Search } from "lucide-react";
+import { trackNotFoundPageView } from "@/lib/analytics";
 
 const NotFound = () => {
   const location = useLocation();
@@ -12,6 +13,9 @@ const NotFound = () => {
       "404 Error: User attempted to access non-existent route:",
       location.pathname
     );
+    
+    // Track 404 page view
+    trackNotFoundPageView(location.pathname);
   }, [location.pathname]);
 
   const handleGoHome = () => {
